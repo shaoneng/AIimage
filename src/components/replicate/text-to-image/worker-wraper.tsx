@@ -7,8 +7,30 @@ export default async function WorkerWraper(params: {
   multiLanguage: string;
   outputDefaultImage: string;
 }) {
-  const effect: Effect | null = await getEffectById(Number(params.effectId));
-  if (!effect) return null;
+  let effect: Effect | null = null;
+  try {
+    effect = await getEffectById(Number(params.effectId));
+  } catch (_) {
+    effect = null;
+  }
+  if (!effect) {
+    effect = {
+      id: 0,
+      name: "Text-to-Image",
+      type: 1,
+      des: "",
+      platform: "google",
+      link: "",
+      api: "models/gemini-2.5-flash-image-preview",
+      is_open: 1,
+      link_name: "text-to-image",
+      credit: 1,
+      created_at: new Date(),
+      model: "models/gemini-2.5-flash-image-preview",
+      version: "",
+      pre_prompt: ""
+    } as Effect;
+  }
   return (
     <div className="flex flex-col w-full p-4 max-w-7xl rounded-lg mt-6">
       <Worker

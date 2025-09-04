@@ -19,5 +19,6 @@ export const config = {
     // Match all pathnames except for
     // - … if they start with `/api`, `/_next` or `/_vercel`
     // - … the root pathname
-    matcher: ['/((?!api|_next|_vercel|.*\\..*).*)']
+    // Additionally include `/favicon.ico` explicitly so next-intl runs and avoids warnings.
+    matcher: ['/((?!api|_next|_vercel|.*\\..*).*)', '/favicon.ico']
 };
