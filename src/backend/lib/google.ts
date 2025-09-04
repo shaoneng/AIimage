@@ -1,4 +1,4 @@
-import { GoogleAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const MODEL = "models/gemini-2.5-flash-image-preview";
 
@@ -12,7 +12,7 @@ export async function generateImageByGemini(params: {
     throw new Error("The GOOGLE_API_KEY (or GEMINI_API_KEY) environment variable is not set.");
   }
 
-  const client = new GoogleAI({ apiKey });
+  const client = new GoogleGenAI({ apiKey });
   const size = `${params.width || 1024}x${params.height || 1024}`;
 
   // Images API: synchronous generation

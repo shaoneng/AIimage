@@ -83,7 +83,7 @@ Implementation Files
 Pseudocode
 - `src/backend/lib/google.ts`
 ```
-import { GoogleAI } from "@google/genai";
+import { GoogleGenAI } from "@google/genai";
 
 const MODEL = "models/gemini-2.5-flash-image-preview";
 
@@ -96,7 +96,7 @@ export async function generateImageByGemini(params: {
   if (!apiKey) {
     throw new Error("GOOGLE_API_KEY (or GEMINI_API_KEY) is not set");
   }
-  const client = new GoogleAI({ apiKey });
+  const client = new GoogleGenAI({ apiKey });
   const size = `${params.width || 1024}x${params.height || 1024}`;
   const res = await client.images.generate({ model: MODEL, prompt: params.prompt, size });
   if (!res?.data?.length || !res.data[0].b64Data) throw new Error("Empty image result from Gemini");
