@@ -15,8 +15,8 @@ export async function generateImageByGemini(params: {
   const client = new GoogleGenAI({ apiKey });
   const size = `${params.width || 1024}x${params.height || 1024}`;
 
-  // Images API: synchronous generation
-  const res: any = await client.images.generate({
+  // Images API: synchronous generation (typings may lag; cast to any)
+  const res: any = await (client as any).images.generate({
     model: MODEL,
     prompt: params.prompt,
     size,
