@@ -1,0 +1,218 @@
+{
+  "Nav": {
+    "home": "Home",
+    "text-to-image": "Text to Image",
+    "logOut": "Log Out",
+    "login": "Sign In",
+    "dashboard": "My Workspace",
+    "pricing": "Pricing",
+    "create": "Create a Video",
+    "generator": "Video Generator"
+  },
+  "HomePage": {
+    "seo": {
+      "title": "AI Video Generator | Premier AI Video Generation Platform",
+      "description": "AI Video Generator is a leading AI platform that uses advanced artificial intelligence technology to craft personalized videos."
+    },
+    "top": {
+      "subTitle": "AI Video Generator",
+      "description": "AI Video Generator empowers anyone to create expressive videos from simple text or images. Whether it's a romantic moment or a playful memory, let our AI bring your vision to life—no editing skills needed.",
+      "button1": "Try AI Video Generator for Free",
+      "button2": "View Subscription Options"
+    },
+    "userExample": {
+      "title": "Real Videos from Real Users",
+      "description": "Discover how creators are turning static images into meaningful motion with AI Video Generator."
+    },
+    "testimonials-slogan": "Join thousands of users creating unforgettable videos with AI Video Generator.",
+    "what": {
+      "title": "What Is AI Video Generator?",
+      "description": "An AI-powered platform that transforms still images or text prompts into animated, emotionally rich videos.",
+      "itemTitle1": "Emotion-Driven Animation",
+      "itemDescription1": "Infuse life into your favorite photos with authentic, expressive animations.",
+      "itemTitle2": "Effortless Workflow",
+      "itemDescription2": "Upload an image, describe your idea—our AI handles the rest in minutes.",
+      "itemTitle3": "Crisp, Professional Output",
+      "itemDescription3": "Export high-resolution videos that are social-media ready.",
+      "itemTitle4": "No Editing Experience Needed",
+      "itemDescription4": "Designed for anyone—no tech or creative background required."
+    },
+    "how": {
+      "title": "How to Create Your First AI Video Generator Video",
+      "description": "Make stunning AI videos in three simple steps:",
+      "item1": "Choose a clear, well-lit photo or enter a text prompt.",
+      "item2": "Describe the mood or style you want—romantic, cinematic, surreal, etc.",
+      "item3": "Let the AI animate your story into a video.",
+      "button": "Start Creating Now"
+    },
+    "testimonials": {
+      "title": "What Our Users Say",
+      "description": "See how AI Video Generator has helped people turn their imagination into moving stories."
+    },
+    "FAQ": {
+      "title": "Frequently Asked Questions",
+      "Q1": "How do I begin making my first video with AI Video Generator?",
+      "A1": "Simply click 'Upload', choose a photo or enter a prompt, and let our AI generate your video. The clearer your input, the better your result.",
+      "Q2": "Can I control the animation style?",
+      "A2": "Yes! Just describe the mood or theme you want—our AI adapts accordingly to match your vision.",
+      "Q3": "What's included in the free trial?",
+      "A3": "You'll receive 5 free credits to explore different animation styles and generate multiple videos. Each creation uses one credit.",
+      "Q4": "How do I cancel my subscription?",
+      "A4": "Email our support team at support@ai-videogenerator.app. Your plan will remain active until the end of your billing period—no additional charges or hidden fees.",
+      "Q5": "What billing plans are available?",
+      "A5": "We offer flexible monthly and discounted annual subscriptions. You can also buy additional credits as needed.",
+      "Q6": "Which plan offers the best value?",
+      "A6": "Our annual plan offers the best price per credit. Perfect for regular creators looking to maximize output at a lower cost."
+    },
+    "Features": {
+      "heading": "Powerful Features to Fuel Your Creativity",
+      "subheading": "Make AI videos that feel personal, dynamic, and share-worthy.",
+      "feature1": {
+        "title": "Realistic AI Animation",
+        "description": "Turn static photos into vibrant video scenes that feel alive."
+      },
+      "feature2": {
+        "title": "Prompt-Based Personalization",
+        "description": "Write your scene, style, or emotion—our AI interprets and animates it."
+      },
+      "feature3": {
+        "title": "High-Resolution Exports",
+        "description": "Download full-quality videos ready to post, share, or keep forever."
+      },
+      "feature4": {
+        "title": "Intuitive Creation Process",
+        "description": "No timeline, no tools—just you and your imagination."
+      },
+      "feature5": {
+        "title": "Instant Sharing",
+        "description": "Easily download or share your videos across platforms."
+      },
+      "feature6": {
+        "title": "Privacy & Data Protection",
+        "description": "We safeguard your content with industry-grade encryption and access controls."
+      }
+    },
+    "generator": {
+      "input": {
+        "title": "AI Video Generator",
+        "text-to-video": "AI Video Generator 1.0 Pro (Text to Video)",
+        "img-to-video": "AI Video Generator 1.0 Pro (Image to Video)",
+        "description": "Instantly generate creative, animated videos from photos or text prompts. Just upload, describe, and let AI do the magic.",
+        "createButton": "Generate Video",
+        "upload": "Upload a Photo",
+        "upload-tips": "Click to upload a image",
+        "promptTips": "Enter a prompt here"
+      },
+      "output": {
+        "title": "Your AI-Generated Video",
+        "unGeneratedTip": "No video yet – get started above!",
+        "downloadButton": "Download Your Video"
+      }
+    },
+    "cta": {
+      "title": "Turn Your Moments into Moving Stories",
+      "description": "AI Video Generator helps you transform everyday moments into cinematic animations using the power of artificial intelligence.",
+      "cta": "Create Your First Video Now"
+    }
+  },
+  "Pricing": {
+    "title": "Flexible Pricing Plans",
+    "description": "Choose the plan that fits your creative flow—whether you're a casual user or a content creator.",
+    "seo": {
+      "title": "AI Video Generator Pricing – Flexible Plans for Every Creator",
+      "description": "Discover AI Video Generator's flexible pricing options designed for creators, marketers, and storytellers to generate cinematic videos with ease."
+    },
+    "FAQ": {
+      "title": "Subscription & Billing Questions",
+      "Q1": "Can I cancel anytime?",
+      "A1": "Yes. Just send us an email at support@ai-videogenerator.com. Your subscription will stay active until your billing cycle ends.",
+      "Q2": "Do you offer monthly and annual plans?",
+      "A2": "Absolutely. Monthly for flexibility, annual for the best savings.",
+      "Q3": "Which plan is the most cost-effective?",
+      "A3": "The annual plan gives you the lowest price per credit. It's ideal if you plan to create videos regularly.",
+      "Q4": "Can I switch between plans?",
+      "A4": "Yes, you can upgrade or downgrade your subscription at any time.",
+      "Q5": "How do you ensure video quality?",
+      "A5": "Our AI uses advanced motion synthesis and enhancement tools. We also offer preview videos so you know what to expect.",
+      "Q6": "Is there a cap on how many videos I can create?",
+      "A6": "Each plan has a credit limit, which determines how many creations you can generate. You can always purchase more if needed.",
+      "Q7": "What if I run out of credits?",
+      "A7": "You can purchase one-time credit packs anytime. No subscription changes needed.",
+      "Q8": "How do I contact support?",
+      "A8": "Reach out to our support team through live chat or email—we're here to help.",
+      "Q9": "Do I need to install anything?",
+      "A9": "Nope! AI Video Generator is completely web-based. All you need is a browser and an internet connection.",
+      "Q10": "Is my payment information secure?",
+      "A10": "Yes—we use Stripe to handle all transactions with the highest standards in security and encryption."
+    }
+  },
+  "TextToImage": {
+    "seo": {
+      "title": "AI Image Generator | Premier AI Image Generation Platform",
+      "description": "AI Image Generator is a leading AI platform that uses advanced artificial intelligence technology to craft personalized images."
+    },
+    "top": {
+      "subTitle": "AI Image Generator",
+      "description": "AI Image Generator is a leading AI platform that uses advanced artificial intelligence technology to craft personalized images."
+    },
+    "input": {
+      "title": "AI Image Generator",
+      "upload": "Upload a Photo",
+      "description": "AI Image Generator is a leading AI platform that uses advanced artificial intelligence technology to craft personalized images."
+    }
+  },
+
+  "dashboard": {
+    "title": "Dashboard",
+    "subscription": {
+      "remainingCredits": "Credits Remaining",
+      "planName": "Current Plan",
+      "periodStart": "Start Date",
+      "periodEnd": "End Date"
+    },
+    "table": {
+      "taskId": "Task ID",
+      "function": "Function",
+      "processTime": "Process Time",
+      "status": "Status",
+      "credit": "Credit",
+      "created": "Created",
+      "view": "View"
+    },
+    "loading": "",
+    "noResults": "No results found",
+    "modal": {
+      "noContent": "No content available",
+      "effect": "Effect",
+      "status": "Status"
+    }
+  },
+  "Seo": {
+    "home": {
+      "title": "AI Video Generator | Premier AI Video Generation Platform",
+      "description": "AI Video Generator is a leading AI platform that uses advanced artificial intelligence technology to craft personalized videos."
+    }
+  },
+  "Footer": {
+    "description": "AI Video Generator is a leading platform for AI video and image creation. Offering the latest and most advanced tools to craft stunning, high-quality AI-generated visuals. Discover how AI can enhance your creativity with user-friendly features and cutting-edge technology.",
+    "recommend": {
+      "title": "Feature",
+      "item": {
+        "item1": "AI Video Generator"
+      }
+    },
+    "legal": {
+      "title": "Legal Information",
+      "item": {
+        "item1": "Privacy Policy",
+        "item2": "Terms of Service"
+      }
+    },
+    "multiLanguage": {
+      "title": "Multiple Languages"
+    },
+    "contact": {
+      "title": "Get in Touch"
+    }
+  }
+}

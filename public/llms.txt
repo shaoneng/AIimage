@@ -1,0 +1,8 @@
+# ai-image-video-generator-template
+
+> AI Image Video Generator Template empowers anyone to create expressive videos from simple text or images. Whether it's a romantic moment or a playful memory, let our AI bring your vision to life—no editing skills needed.
+
+AI Image Video Generator Template is a leading platform for AI video and image creation. Offering the latest and most advanced tools to craft stunning, high-quality AI-generated visuals. Discover how AI can enhance your creativity with user-friendly features and cutting-edge technology.
+
+## Video Creation
+- [AI Image Video Generator](https://xxxx.com)

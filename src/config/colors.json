@@ -1,0 +1,65 @@
+{
+  "themes": {
+    "default": {
+      "name": "默认主题",
+      "colors": {
+        "primary": "220 100% 50%",
+        "primary-dark": "220 100% 40%",
+        "secondary": "220 60% 90%",
+        "accent": "220 100% 60%",
+        "background": "0 0% 100%",
+        "foreground": "220 10% 10%",
+        "muted": "220 10% 60%"
+      }
+    },
+    "green": {
+      "name": "绿色主题",
+      "colors": {
+        "primary": "120 100% 40%",
+        "primary-dark": "120 100% 30%",
+        "secondary": "120 60% 90%", 
+        "accent": "120 100% 50%",
+        "background": "0 0% 100%",
+        "foreground": "120 10% 10%",
+        "muted": "120 10% 60%"
+      }
+    },
+    "orange": {
+      "name": "橙色主题",
+      "colors": {
+        "primary": "30 100% 50%",
+        "primary-dark": "30 100% 40%",
+        "secondary": "30 60% 90%",
+        "accent": "30 100% 60%",
+        "background": "0 0% 100%",
+        "foreground": "30 10% 10%",
+        "muted": "30 10% 60%"
+      }
+    },
+    "purple": {
+      "name": "紫色主题",
+      "colors": {
+        "primary": "270 100% 50%",
+        "primary-dark": "270 100% 40%",
+        "secondary": "270 60% 90%",
+        "accent": "270 100% 60%",
+        "background": "0 0% 100%",
+        "foreground": "270 10% 10%",
+        "muted": "270 10% 60%"
+      }
+    },
+    "red": {
+      "name": "红色主题",
+      "colors": {
+        "primary": "0 100% 50%",
+        "primary-dark": "0 100% 40%",
+        "secondary": "0 60% 90%",
+        "accent": "0 100% 60%",
+        "background": "0 0% 100%",
+        "foreground": "0 10% 10%",
+        "muted": "0 10% 60%"
+      }
+    }
+  },
+  "currentTheme": "blue"
+}
