@@ -29,14 +29,14 @@ Key Changes
 - New Google adapter: `src/backend/lib/google.ts` exposes `generateImageByGemini({ prompt, width, height })`.
 - R2 adapter extended to support buffer upload: `uploadBufferToR2(buffer, key, contentType)`.
 - Replace internals of `src/app/api/predictions/text_to_image/route.ts` to call Gemini + R2 + DB atomically.
-- Add dependency `google-genai` and env `GEMINI_API_KEY`.
+- Add dependency `@google/genai` and env `GOOGLE_API_KEY` (fallback `GEMINI_API_KEY`).
 
 Dependencies
-- `google-genai`: Google Generative AI SDK
+- `@google/genai`: Google Generative AI SDK (unified)
 - Already present: `@aws-sdk/client-s3`, `@aws-sdk/s3-request-presigner` (R2), `pg` (DB)
 
 Environment
-- `GEMINI_API_KEY`: Google AI Studio API key.
+- `GOOGLE_API_KEY` (or `GEMINI_API_KEY`): Google AI Studio API key.
 - Existing R2 vars: `R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`, `R2_ENDPOINT`.
 - Existing DB vars: `POSTGRES_URL`.
 
@@ -78,12 +78,12 @@ Implementation Files
 - `src/app/api/predictions/text_to_image/route.ts`:
   - Replace Replicate flow with Gemini + R2 + DB + credit deduction.
 - `package.json`:
-  - Add `"google-genai": "^1.x"` dependency.
+  - Add `"@google/genai": "^1.x"` dependency.
 
 Pseudocode
 - `src/backend/lib/google.ts`
 ```
-import { GoogleAI } from "google-genai";
+import { GoogleAI } from "@google/genai";
 
 const MODEL = "models/gemini-2.5-flash-image-preview";
 
@@ -92,10 +92,11 @@ export async function generateImageByGemini(params: {
   width?: number;
   height?: number;
 }) {
-  if (!process.env.GEMINI_API_KEY) {
-    throw new Error("GEMINI_API_KEY is not set");
+  const apiKey = process.env.GOOGLE_API_KEY || process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("GOOGLE_API_KEY (or GEMINI_API_KEY) is not set");
   }
-  const client = new GoogleAI({ apiKey: process.env.GEMINI_API_KEY });
+  const client = new GoogleAI({ apiKey });
   const size = `${params.width || 1024}x${params.height || 1024}`;
   const res = await client.images.generate({ model: MODEL, prompt: params.prompt, size });
   if (!res?.data?.length || !res.data[0].b64Data) throw new Error("Empty image result from Gemini");
@@ -216,4 +217,3 @@ Acceptance Criteria
 - `effect_result` row created with `status="succeeded"` and correct metadata.
 - User credits decremented exactly once per successful generation.
 - Frontend displays generated images without change.
-

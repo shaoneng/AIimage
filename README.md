@@ -114,7 +114,7 @@ npm run dev
 本项目已将“文字生成图像（Text-to-Image）”的后端从 Replicate 迁移至 Google Images API，使用模型 `models/gemini-2.5-flash-image-preview`，同步生成、无需 webhook。
 
 - 前置准备：
-  - 在 `.env.local` 设置 `GEMINI_API_KEY`
+  - 在 `.env.local` 设置 `GOOGLE_API_KEY`（或保留现有 `GEMINI_API_KEY`；后端已兼容两者）
   - 确保 R2/S3 环境变量已配置（用于保存生成的图片）
   - 使用 Google 登录（NextAuth）进入站点以获取用户与积分
 
@@ -158,7 +158,7 @@ npm run dev
 
   - 常见错误：
     - 401/402/403：用户未登录/积分不足/已达当月额度（请先用 Google 登录并购买或订阅）
-    - 500：生成或上传失败（检查 `GEMINI_API_KEY`、R2 配置与网络）
+    - 500：生成或上传失败（检查 `GOOGLE_API_KEY`/`GEMINI_API_KEY`、R2 配置与网络）
 
 - 图片格式与尺寸：
   - 默认输出 PNG，`width/height` 默认 1024，可在 512–1536 范围内（建议）
