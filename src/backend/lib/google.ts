@@ -18,7 +18,8 @@ async function callWithRetry<T>(fn: () => Promise<T>, max = 3) {
       const msg = e?.message || "";
       const is429 = /429|RESOURCE_EXHAUSTED|Too Many Requests|quota/i.test(msg);
       const is5xx = /\b5\d\d\b|Internal error|INTERNAL/i.test(msg);
-      if (!(is429 || is5xx) || i === max - 1) throw e;
+      const isTls = /EPROTO|handshake failure|SSL routines|ssl3_read_bytes/i.test(msg);
+      if (!(is429 || is5xx || isTls) || i === max - 1) throw e;
 
       // 尝试解析 RetryInfo.retryDelay
       let retryMs = delayMs;
