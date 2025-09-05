@@ -15,8 +15,15 @@ export async function generateImageByGemini(params: {
   const client = new GoogleGenAI({ apiKey });
   const size = `${params.width || 1024}x${params.height || 1024}`;
 
-  // Images API: synchronous generation (typings may lag; cast to any)
-  const res: any = await (client as any).images.generate({
+  // Images API: some versions of @google/genai may not expose `images`
+  const anyClient = client as any;
+  if (!anyClient.images || typeof anyClient.images.generate !== "function") {
+    throw new Error(
+      "@google/genai 版本不支持 Images API（client.images.generate 不存在）。请升级依赖：npm i @google/genai@latest，并确认使用 Google AI Studio API key。"
+    );
+  }
+
+  const res: any = await anyClient.images.generate({
     model: MODEL,
     prompt: params.prompt,
     size,
