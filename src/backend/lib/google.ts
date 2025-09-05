@@ -2,6 +2,7 @@ import { GoogleGenAI } from "@google/genai";
 
 // 默认使用预览图像模型；可通过 GEMINI_IMAGE_MODEL 覆盖
 const MODEL = process.env.GEMINI_IMAGE_MODEL || "models/gemini-2.5-flash-image-preview";
+const FALLBACK_MODEL = process.env.GEMINI_IMAGE_MODEL_FALLBACK || "models/gemini-2.0-flash-001";
 
 async function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -52,23 +53,23 @@ export async function generateImageByGemini(params: {
 
   // Images API: some versions of @google/genai may not expose `images`
   const anyClient = client as any;
-  let res: any;
-  if (anyClient.images && typeof anyClient.images.generate === "function") {
-    // SDK 路径（带重试）
-    res = await callWithRetry(() =>
-      anyClient.images.generate({ model: MODEL, prompt: params.prompt, size } as any)
-    );
-  } else {
-    // REST 回退（内容接口）。去掉不确定的 generationConfig/size，减少 5xx 概率。
-    const modelId = MODEL.replace(/^models\//, "");
+  async function requestOnce(model: string) {
+    if (anyClient.images && typeof anyClient.images.generate === "function") {
+      // SDK 路径（带重试）
+      return await callWithRetry(() =>
+        anyClient.images.generate({ model, prompt: params.prompt, size } as any)
+      );
+    }
+    // REST 回退（内容接口）。显式声明只要 IMAGE，提升稳定性
+    const modelId = model.replace(/^models\//, "");
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
       modelId
     )}:generateContent?key=${encodeURIComponent(apiKey)}`;
     const body = {
       contents: [{ role: "user", parts: [{ text: params.prompt }] }],
+      generationConfig: { responseModalities: ["IMAGE"] },
     } as any;
-
-    res = await callWithRetry(async () => {
+    return await callWithRetry(async () => {
       const resp = await fetch(url, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -82,6 +83,20 @@ export async function generateImageByGemini(params: {
       }
       return resp.json();
     });
+  }
+
+  let res: any;
+  try {
+    res = await requestOnce(MODEL);
+  } catch (e: any) {
+    const msg = e?.message || "";
+    const is5xx = /\b5\d\d\b|Internal error|INTERNAL/i.test(msg);
+    // 当上游 5xx 时，尝试回退模型提高成功率
+    if (is5xx && FALLBACK_MODEL && FALLBACK_MODEL !== MODEL) {
+      res = await requestOnce(FALLBACK_MODEL);
+    } else {
+      throw e;
+    }
   }
 
   // 兼容 SDK 与 REST 的不同响应形态
