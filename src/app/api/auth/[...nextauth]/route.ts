@@ -10,17 +10,23 @@ import { getCreditUsageByUserId } from "@/backend/service/credit_usage";
 
 let providers: Provider[] = [];
 
+// 计算回调地址：优先使用 NEXTAUTH_URL，避免与 Google 控制台允许的 Redirect URI 不一致
+const nextauthBase = (process.env.NEXTAUTH_URL || "").replace(/\/$/, "");
+const computedRedirect = nextauthBase
+  ? `${nextauthBase}/api/auth/callback/google`
+  : undefined;
+
 providers.push(
   GoogleProvider({
     clientId: process.env.GOOGLE_CLIENT_ID || "",
     clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-    authorization: {
-      params: {
-        redirect_uri: process.env.GOOGLE_REDIRECT_URI || "",
-      },
-    },
+    ...(computedRedirect
+      ? { authorization: { params: { redirect_uri: computedRedirect } } }
+      : {}),
   })
 );
+
+export const dynamic = "force-dynamic";
 
 const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
