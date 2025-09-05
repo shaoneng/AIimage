@@ -9,6 +9,17 @@ import { uploadBufferToR2 } from "@/backend/lib/r2";
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
+// Simple per-user/IP rate limiter (best-effort within the same serverless instance)
+const RL_WINDOW_MS = Number(process.env.TTI_RATE_WINDOW_MS || 10_000);
+const rlMap: Map<string, number> = new Map();
+
+function getClientKey(request: Request, userId?: string) {
+  if (userId) return `u:${userId}`;
+  const xf = request.headers.get("x-forwarded-for") || "";
+  const ip = xf.split(",")[0]?.trim() || "unknown";
+  return `ip:${ip}`;
+}
+
 export async function POST(request: Request) {
   const requestBody = await request.json();
   const {
@@ -20,6 +31,19 @@ export async function POST(request: Request) {
     effect_link_name = "text-to-image",
     credit = 1,
   } = requestBody || {};
+
+  // Basic rate limit (best-effort per instance)
+  const key = getClientKey(request, user_id);
+  const now = Date.now();
+  const last = rlMap.get(key) || 0;
+  if (now - last < RL_WINDOW_MS) {
+    const retryMs = RL_WINDOW_MS - (now - last);
+    return NextResponse.json(
+      { detail: "Too many requests, please retry later", retry_after_ms: retryMs },
+      { status: 429, headers: { "Retry-After": String(Math.ceil(retryMs / 1000)) } }
+    );
+  }
+  rlMap.set(key, now);
 
   // Validate user and credit using existing checker
   const check = await generateCheck(user_id, user_email, String(credit));

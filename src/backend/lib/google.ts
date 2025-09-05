@@ -1,4 +1,17 @@
 import { GoogleGenAI } from "@google/genai";
+import { Agent, setGlobalDispatcher } from "undici";
+
+// Stabilize TLS/HTTP behavior globally for Node fetch (undici)
+try {
+  const dispatcher = new Agent({
+    allowH2: false,
+    connect: {
+      timeout: 30_000,
+      tls: { minVersion: "TLSv1.2", maxVersion: "TLSv1.3" },
+    },
+  });
+  setGlobalDispatcher(dispatcher);
+} catch {}
 
 // 默认使用预览图像模型；可通过 GEMINI_IMAGE_MODEL 覆盖
 const MODEL = process.env.GEMINI_IMAGE_MODEL || "models/gemini-2.5-flash-image-preview";
