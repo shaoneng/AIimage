@@ -1,0 +1,8 @@
+{
+  "functions": {
+    "app/api/predictions/text_to_image/route.ts": {
+      "regions": ["sfo1", "hnd1", "cdg1"]
+    }
+  }
+}
+

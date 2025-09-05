@@ -5,9 +5,10 @@ import { lookup as dnsLookup } from "node:dns";
 // Stabilize TLS/HTTP behavior globally for Node fetch (undici)
 try {
   const dispatcher = new Agent({
-    // 让 undici 走 IPv4，规避部分环境 IPv6/TLS 抖动
+    allowH2: false, // 强制 HTTP/1.1，降低 ALPN 协商失败概率
     connect: {
       timeout: 30_000,
+      // 让 undici 走 IPv4，规避部分环境 IPv6/TLS 抖动
       lookup: (hostname: string, opts: any, cb: any) =>
         dnsLookup(hostname, { ...opts, family: 4 }, cb),
     },
@@ -19,6 +20,8 @@ try {
 const MODEL = process.env.GEMINI_IMAGE_MODEL || "models/gemini-2.5-flash-image-preview";
 const FALLBACK_MODEL = process.env.GEMINI_IMAGE_MODEL_FALLBACK || "models/gemini-2.0-flash-001";
 const ALLOW_FALLBACK = (process.env.GEMINI_ALLOW_FALLBACK || "0") === "1";
+const PROXY_URL = process.env.GEMINI_PROXY_URL || "";
+const PROXY_AUTH = process.env.GEMINI_PROXY_AUTH || "";
 
 async function sleep(ms: number) {
   return new Promise((r) => setTimeout(r, ms));
@@ -72,6 +75,24 @@ export async function generateImageByGemini(params: {
   // Images API: some versions of @google/genai may not expose `images`
   const anyClient = client as any;
   async function requestOnce(model: string) {
+    // 若配置了代理，则优先通过代理转发，规避直连 TLS 抖动
+    if (PROXY_URL) {
+      return await callWithRetry(async () => {
+        const resp = await fetch(PROXY_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(PROXY_AUTH ? { Authorization: `Bearer ${PROXY_AUTH}` } : {}),
+          },
+          body: JSON.stringify({ model, prompt: params.prompt }),
+        });
+        if (!resp.ok) {
+          const errText = await resp.text().catch(() => "");
+          throw new Error(`Proxy call failed: ${resp.status} ${resp.statusText} ${errText}`);
+        }
+        return resp.json();
+      });
+    }
     // 优先尝试统一 SDK 的内容接口（models.generateContent）
     if (anyClient.models && typeof anyClient.models.generateContent === "function") {
       return await callWithRetry(() =>

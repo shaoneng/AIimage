@@ -8,6 +8,7 @@ import { uploadBufferToR2 } from "@/backend/lib/r2";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const preferredRegion = ["sfo1", "hnd1", "cdg1"]; // 绕开美国东部出口
 
 // Simple per-user/IP rate limiter (best-effort within the same serverless instance)
 const RL_WINDOW_MS = Number(process.env.TTI_RATE_WINDOW_MS || 10_000);
