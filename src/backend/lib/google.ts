@@ -5,10 +5,7 @@ import { Agent, setGlobalDispatcher } from "undici";
 try {
   const dispatcher = new Agent({
     allowH2: false,
-    connect: {
-      timeout: 30_000,
-      tls: { minVersion: "TLSv1.2", maxVersion: "TLSv1.3" },
-    },
+    connect: { timeout: 30_000 },
   });
   setGlobalDispatcher(dispatcher);
 } catch {}
