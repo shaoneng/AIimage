@@ -13,7 +13,8 @@ export default function Output({
   defaultImage: string;
   showImage: string | null;
 }) {
-  const t = useTranslations("PhotoToCartoon.generator");
+  // 使用已存在的 HomePage.generator 词条，避免缺失报错
+  const t = useTranslations("HomePage.generator");
   return (
     <div className="flex flex-col w-full md:w-1/2 px-4 mt-8 md:mt-0">
       {error && error !== "" && (
