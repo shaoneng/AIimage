@@ -47,8 +47,9 @@ export async function generateImageByGemini(params: {
   if (!apiKey) {
     throw new Error("The GOOGLE_API_KEY (or GEMINI_API_KEY) environment variable is not set.");
   }
+  const key = apiKey as string; // narrow to string for TS
 
-  const client = new GoogleGenAI({ apiKey });
+  const client = new GoogleGenAI({ apiKey: key });
   const size = `${params.width || 1024}x${params.height || 1024}`;
 
   // Images API: some versions of @google/genai may not expose `images`
@@ -64,7 +65,7 @@ export async function generateImageByGemini(params: {
     const modelId = model.replace(/^models\//, "");
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
       modelId
-    )}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    )}:generateContent?key=${encodeURIComponent(key)}`;
     const body = {
       contents: [{ role: "user", parts: [{ text: params.prompt }] }],
       generationConfig: { responseModalities: ["IMAGE"] },
