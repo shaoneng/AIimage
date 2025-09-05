@@ -17,19 +17,33 @@ export async function generateImageByGemini(params: {
 
   // Images API: some versions of @google/genai may not expose `images`
   const anyClient = client as any;
-  if (!anyClient.images || typeof anyClient.images.generate !== "function") {
-    throw new Error(
-      "@google/genai 版本不支持 Images API（client.images.generate 不存在）。请升级依赖：npm i @google/genai@latest，并确认使用 Google AI Studio API key。"
-    );
+  let res: any;
+  if (anyClient.images && typeof anyClient.images.generate === "function") {
+    // SDK 路径
+    res = await anyClient.images.generate({
+      model: MODEL,
+      prompt: params.prompt,
+      size,
+    } as any);
+  } else {
+    // REST 回退：部分运行环境/版本未暴露 images.generate
+    const url = `https://generativelanguage.googleapis.com/v1beta/images:generate?key=${encodeURIComponent(apiKey)}`;
+    const resp = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ model: MODEL, prompt: params.prompt, size }),
+    });
+    if (!resp.ok) {
+      const errText = await resp.text().catch(() => "");
+      throw new Error(
+        `Images REST API 调用失败：${resp.status} ${resp.statusText} ${errText}`
+      );
+    }
+    res = await resp.json();
   }
 
-  const res: any = await anyClient.images.generate({
-    model: MODEL,
-    prompt: params.prompt,
-    size,
-  } as any);
-
-  const first = res?.data?.[0];
+  // 兼容 SDK 与 REST 的不同响应形态
+  const first = res?.data?.[0] || res?.images?.[0] || res?.result?.[0] || res?.[0];
   if (!first || !first.b64Data) {
     throw new Error("No image data returned from Gemini Images API");
   }
