@@ -67,7 +67,7 @@ export async function generateImageByGemini(params: {
     const modelId = model.replace(/^models\//, "");
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
       modelId
-    )}:generateContent?key=${encodeURIComponent(key)}`;
+    )}:generateContent`;
     const body = {
       contents: [{ role: "user", parts: [{ text: params.prompt }] }],
       generationConfig: { responseModalities: ["IMAGE"] },
@@ -75,7 +75,7 @@ export async function generateImageByGemini(params: {
     return await callWithRetry(async () => {
       const resp = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-goog-api-key": key },
         body: JSON.stringify(body),
       });
       if (!resp.ok) {

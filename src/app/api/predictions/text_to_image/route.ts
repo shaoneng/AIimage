@@ -6,6 +6,9 @@ import { generateCheck } from "@/backend/service/generate-_check";
 import { generateImageByGemini } from "@/backend/lib/google";
 import { uploadBufferToR2 } from "@/backend/lib/r2";
 
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
 export async function POST(request: Request) {
   const requestBody = await request.json();
   const {
