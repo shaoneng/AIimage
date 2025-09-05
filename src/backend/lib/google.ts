@@ -57,6 +57,17 @@ export async function generateImageByGemini(params: {
   // Images API: some versions of @google/genai may not expose `images`
   const anyClient = client as any;
   async function requestOnce(model: string) {
+    // 优先尝试统一 SDK 的内容接口（models.generateContent）
+    if (anyClient.models && typeof anyClient.models.generateContent === "function") {
+      return await callWithRetry(() =>
+        anyClient.models.generateContent({
+          model: model.replace(/^models\//, ""),
+          contents: [{ role: "user", parts: [{ text: params.prompt }] }],
+          responseModalities: ["IMAGE"],
+        } as any)
+      );
+    }
+    // 其次尝试 SDK 的 Images API（部分版本可用）
     if (anyClient.images && typeof anyClient.images.generate === "function") {
       // SDK 路径（带重试）
       return await callWithRetry(() =>
