@@ -30,7 +30,6 @@ export const dynamic = "force-dynamic";
 
 const authOptions: AuthOptions = {
   secret: process.env.NEXTAUTH_SECRET,
-  trustHost: true,
   providers,
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
