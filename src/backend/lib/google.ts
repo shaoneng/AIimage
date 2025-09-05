@@ -1,6 +1,41 @@
 import { GoogleGenAI } from "@google/genai";
 
-const MODEL = "models/gemini-2.5-flash-image-preview";
+// 默认使用预览图像模型；可通过 GEMINI_IMAGE_MODEL 覆盖
+const MODEL = process.env.GEMINI_IMAGE_MODEL || "models/gemini-2.5-flash-image-preview";
+
+async function sleep(ms: number) {
+  return new Promise((r) => setTimeout(r, ms));
+}
+
+async function callWithRetry<T>(fn: () => Promise<T>, max = 3) {
+  let delayMs = 1000;
+  for (let i = 0; i < max; i++) {
+    try {
+      return await fn();
+    } catch (e: any) {
+      const msg = e?.message || "";
+      const is429 = /429|RESOURCE_EXHAUSTED|Too Many Requests|quota/i.test(msg);
+      const is5xx = /\b5\d\d\b|Internal error|INTERNAL/i.test(msg);
+      if (!(is429 || is5xx) || i === max - 1) throw e;
+
+      // 尝试解析 RetryInfo.retryDelay
+      let retryMs = delayMs;
+      try {
+        const jsonStart = msg.indexOf("{\n");
+        const raw = jsonStart >= 0 ? msg.slice(jsonStart) : "";
+        const body = raw ? JSON.parse(raw) : null;
+        const details = body?.error?.details || [];
+        const retry = details.find((d: any) => String(d?.["@type"]).includes("RetryInfo"));
+        const retryDelay = retry?.retryDelay as string | undefined; // e.g. "22s"
+        if (retryDelay?.endsWith("s")) retryMs = Number(retryDelay.slice(0, -1)) * 1000;
+      } catch {}
+
+      await sleep(retryMs);
+      delayMs = Math.min(delayMs * 2, 8000);
+    }
+  }
+  throw new Error("unreachable");
+}
 
 export async function generateImageByGemini(params: {
   prompt: string;
@@ -19,38 +54,34 @@ export async function generateImageByGemini(params: {
   const anyClient = client as any;
   let res: any;
   if (anyClient.images && typeof anyClient.images.generate === "function") {
-    // SDK 路径
-    res = await anyClient.images.generate({
-      model: MODEL,
-      prompt: params.prompt,
-      size,
-    } as any);
+    // SDK 路径（带重试）
+    res = await callWithRetry(() =>
+      anyClient.images.generate({ model: MODEL, prompt: params.prompt, size } as any)
+    );
   } else {
-    // REST 回退（使用内容接口 generateContent，更稳定）
-    // 注意：generateContent 的 URL 需要 path 参数携带模型名
+    // REST 回退（内容接口）。去掉不确定的 generationConfig/size，减少 5xx 概率。
     const modelId = MODEL.replace(/^models\//, "");
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
       modelId
     )}:generateContent?key=${encodeURIComponent(apiKey)}`;
     const body = {
-      contents: [
-        { role: "user", parts: [{ text: params.prompt }] }
-      ],
-      // 请求图像输出；命名与 Python SDK 对齐（REST 常为驼峰）
-      generationConfig: { responseModalities: ["IMAGE", "TEXT"] }
+      contents: [{ role: "user", parts: [{ text: params.prompt }] }],
     } as any;
-    const resp = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
+
+    res = await callWithRetry(async () => {
+      const resp = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      if (!resp.ok) {
+        const errText = await resp.text().catch(() => "");
+        throw new Error(
+          `Content REST API 调用失败：${resp.status} ${resp.statusText} ${errText}`
+        );
+      }
+      return resp.json();
     });
-    if (!resp.ok) {
-      const errText = await resp.text().catch(() => "");
-      throw new Error(
-        `Content REST API 调用失败：${resp.status} ${resp.statusText} ${errText}`
-      );
-    }
-    res = await resp.json();
   }
 
   // 兼容 SDK 与 REST 的不同响应形态
