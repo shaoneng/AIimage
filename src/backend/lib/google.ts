@@ -1,11 +1,16 @@
 import { GoogleGenAI } from "@google/genai";
 import { Agent, setGlobalDispatcher } from "undici";
+import { lookup as dnsLookup } from "node:dns";
 
 // Stabilize TLS/HTTP behavior globally for Node fetch (undici)
 try {
   const dispatcher = new Agent({
-    allowH2: false,
-    connect: { timeout: 30_000 },
+    // 让 undici 走 IPv4，规避部分环境 IPv6/TLS 抖动
+    connect: {
+      timeout: 30_000,
+      lookup: (hostname: string, opts: any, cb: any) =>
+        dnsLookup(hostname, { ...opts, family: 4 }, cb),
+    },
   });
   setGlobalDispatcher(dispatcher);
 } catch {}
