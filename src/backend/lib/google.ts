@@ -26,24 +26,40 @@ export async function generateImageByGemini(params: {
       size,
     } as any);
   } else {
-    // REST 回退：部分运行环境/版本未暴露 images.generate
-    const url = `https://generativelanguage.googleapis.com/v1beta/images:generate?key=${encodeURIComponent(apiKey)}`;
+    // REST 回退（使用内容接口 generateContent，更稳定）
+    // 注意：generateContent 的 URL 需要 path 参数携带模型名
+    const modelId = MODEL.replace(/^models\//, "");
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(
+      modelId
+    )}:generateContent?key=${encodeURIComponent(apiKey)}`;
+    const body = {
+      contents: [
+        { role: "user", parts: [{ text: params.prompt }] }
+      ],
+      // 请求图像输出；命名与 Python SDK 对齐（REST 常为驼峰）
+      generationConfig: { responseModalities: ["IMAGE", "TEXT"] }
+    } as any;
     const resp = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ model: MODEL, prompt: params.prompt, size }),
+      body: JSON.stringify(body),
     });
     if (!resp.ok) {
       const errText = await resp.text().catch(() => "");
       throw new Error(
-        `Images REST API 调用失败：${resp.status} ${resp.statusText} ${errText}`
+        `Content REST API 调用失败：${resp.status} ${resp.statusText} ${errText}`
       );
     }
     res = await resp.json();
   }
 
   // 兼容 SDK 与 REST 的不同响应形态
-  const first = res?.data?.[0] || res?.images?.[0] || res?.result?.[0] || res?.[0];
+  const first =
+    res?.data?.[0] ||
+    res?.images?.[0] ||
+    res?.result?.[0] ||
+    res?.candidates?.[0]?.content?.parts?.find((p: any) => p?.inlineData?.data) ||
+    res?.[0];
   if (!first || !first.b64Data) {
     throw new Error("No image data returned from Gemini Images API");
   }
